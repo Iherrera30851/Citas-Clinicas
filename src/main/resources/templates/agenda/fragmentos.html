@@ -1,0 +1,113 @@
+<section th:fragment="tabs" class="py-3 mb-2">
+    <div class="d-flex justify-content-center px-5">
+        <ul class="nav nav-underline">
+            <li th:each="p : ${profesionales}" class="nav-item">
+                <a th:href="@{/agenda/{id}(id=${p.idProfesional})}"
+                   th:classappend="${idProfesionalActual != null and idProfesionalActual.equals(p.idProfesional)} ? 'active'"
+                   class="nav-link">
+                    [[${p.nombre + ' ' + p.apellidos}]]
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section th:fragment="listado" class="p-3">
+    <div th:if="${idProfesionalActual == null}" class="text-center p-2">
+        <span>[[#{agenda.seleccione}]]</span>
+    </div>
+    <div th:if="${idProfesionalActual != null}" class="row p-3">
+        <div class="col-md-12">
+            <div class="card p-2">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4>[[#{agenda.titulo}]]</h4>
+                    <form th:action="@{/agenda/{id}(id=${idProfesionalActual})}" method="get" class="d-flex">
+                        <input type="date" name="fecha" th:value="${fecha}" class="form-control me-2"/>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> [[#{accion.buscar}]]</button>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <div th:if="${citas != null and !citas.empty}">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>[[#{cita.hora}]]</th>
+                                    <th>[[#{cita.paciente}]]</th>
+                                    <th>[[#{cita.motivo}]]</th>
+                                    <th>[[#{cita.estado}]]</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="c : ${citas}">
+                                    <td>[[${c.disponibilidad.horaInicio}]] - [[${c.disponibilidad.horaFin}]]</td>
+                                    <td>[[${c.paciente.nombre + ' ' + c.paciente.apellidos}]]</td>
+                                    <td>[[${c.motivo}]]</td>
+                                    <td>[[${c.estado}]]</td>
+                                    <td>
+                                        <form th:if="${c.estado == 'EN_CURSO'}" th:action="@{/agenda/estado}" method="post" class="d-inline">
+                                            <input type="hidden" name="idCita" th:value="${c.idCita}"/>
+                                            <input type="hidden" name="estado" value="ATENDIDA"/>
+                                            <input type="hidden" name="idProfesional" th:value="${idProfesionalActual}"/>
+                                            <input type="hidden" name="fecha" th:value="${fecha}"/>
+                                            <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-check"></i> [[#{agenda.atendida}]]</button>
+                                        </form>
+                                        <form th:if="${c.estado == 'CONFIRMADA'}" th:action="@{/agenda/estado}" method="post" class="d-inline">
+                                            <input type="hidden" name="idCita" th:value="${c.idCita}"/>
+                                            <input type="hidden" name="estado" value="AUSENTE"/>
+                                            <input type="hidden" name="idProfesional" th:value="${idProfesionalActual}"/>
+                                            <input type="hidden" name="fecha" th:value="${fecha}"/>
+                                            <button type="submit" class="btn btn-secondary btn-sm"><i class="fas fa-user-xmark"></i> [[#{agenda.ausente}]]</button>
+                                        </form>
+                                        <button th:if="${c.estado == 'ATENDIDA'}" type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#notaModal"
+                                                th:data-id="${c.idCita}"
+                                                th:data-descripcion="${c.paciente.nombre + ' ' + c.paciente.apellidos}"
+                                                th:data-nota="${c.notas.empty ? '' : c.notas[0].descripcion}">
+                                            <i class="fas fa-file-medical"></i> [[#{agenda.nota}]]
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center p-2" th:if="${citas == null or citas.empty}">
+                        <span>[[#{lista.vacia}]]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section th:fragment="notaModal">
+    <div class="modal fade" id="notaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" th:action="@{/agenda/nota}">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title">[[#{agenda.nota}]]</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="notaCita" name="idCita"/>
+                        <input type="hidden" name="idProfesional" th:value="${idProfesionalActual}"/>
+                        <input type="hidden" name="fecha" th:value="${fecha}"/>
+                        <p class="fw-bold" id="notaPaciente"></p>
+                        <div class="mb-3">
+                            <label for="notaDescripcion">[[#{agenda.notaDescripcion}]]</label>
+                            <textarea id="notaDescripcion" name="descripcion" rows="5" class="form-control" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark"></i> [[#{accion.cerrar}]]
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-floppy-disk"></i> [[#{accion.guardar}]]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
