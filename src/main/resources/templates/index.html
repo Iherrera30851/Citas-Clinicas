@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{general/fragmentos :: head}"></head>
+    <body>
+        <header th:replace="~{general/fragmentos :: header}"></header>
+
+        <section class="container py-4">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-white"><h5 class="mb-0"><i class="fas fa-user-gear"></i> [[#{plantilla.admin}]]</h5></div>
+                        <div class="list-group list-group-flush">
+                            <a class="list-group-item list-group-item-action" th:href="@{/especialidad/listado}">[[#{plantilla.especialidades}]]</a>
+                            <a class="list-group-item list-group-item-action" th:href="@{/profesional/listado}">[[#{plantilla.profesionales}]]</a>
+                            <a class="list-group-item list-group-item-action" th:href="@{/paciente/listado}">[[#{plantilla.pacientes}]]</a>
+                            <a class="list-group-item list-group-item-action" th:href="@{/disponibilidad/listado}">[[#{plantilla.horarios}]]</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-white"><h5 class="mb-0"><i class="fas fa-clipboard-list"></i> [[#{plantilla.recepcion}]]</h5></div>
+                        <div class="list-group list-group-flush">
+                            <a class="list-group-item list-group-item-action" th:href="@{/cita/listado}">[[#{plantilla.citas}]]</a>
+                            <a class="list-group-item list-group-item-action" th:href="@{/pago/listado}">[[#{plantilla.pagos}]]</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-white"><h5 class="mb-0"><i class="fas fa-user-doctor"></i> [[#{plantilla.profesional}]]</h5></div>
+                        <div class="list-group list-group-flush">
+                            <a class="list-group-item list-group-item-action" th:href="@{/agenda/listado}">[[#{plantilla.agenda}]]</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-white"><h5 class="mb-0"><i class="fas fa-user"></i> [[#{plantilla.paciente}]]</h5></div>
+                        <div class="list-group list-group-flush">
+                            <a class="list-group-item list-group-item-action" th:href="@{/cita/agendar}">[[#{plantilla.agendar}]]</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer th:replace="~{general/fragmentos :: footer}"></footer>
+    </body>
+</html>

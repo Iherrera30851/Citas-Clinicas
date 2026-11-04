@@ -1,0 +1,101 @@
+<section th:fragment="formulario">
+    <div class="row py-4 mb-2 bg-light">
+        <div class="col-md-1"></div>
+        <div class="col-md-3">
+            <button type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#especialidadModal"
+                    data-modo="agregar"
+                    th:data-titulo="#{especialidad.agregar}">
+                <i class="fa-solid fa-plus"></i>
+                [[#{especialidad.agregar}]]
+            </button>
+        </div>
+    </div>
+    <div class="modal fade" id="especialidadModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="especialidadForm" method="post" th:action="@{/especialidad/guardar}">
+                    <div class="modal-header" id="especialidadModalHeader">
+                        <h5 class="modal-title" id="especialidadModalTitulo"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="especialidadId" name="idEspecialidad"/>
+                        <div class="mb-3">
+                            <label for="especialidadDescripcion">[[#{especialidad.descripcion}]]</label>
+                            <input type="text" id="especialidadDescripcion" name="descripcion" class="form-control" maxlength="50" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="especialidadActivo">[[#{especialidad.activo}]]</label>
+                            <input type="checkbox" id="especialidadActivo" name="activo" class="form-check-input"/>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark"></i> [[#{accion.cerrar}]]
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-floppy-disk"></i> [[#{accion.guardar}]]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section th:fragment="listado" class="p-3">
+    <div class="row p-3">
+        <div class="col-md-9">
+            <div class="card p-2">
+                <div class="card-header"><h4>[[#{especialidad.listado}]]</h4></div>
+                <div class="card-body">
+                    <div th:if="${especialidades != null and !especialidades.empty}">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>[[#{especialidad.descripcion}]]</th>
+                                    <th>[[#{especialidad.activo}]]</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="e : ${especialidades}">
+                                    <td>[[${e.idEspecialidad}]]</td>
+                                    <td>[[${e.descripcion}]]</td>
+                                    <td th:text="${e.activo} ? #{estado.activo} : #{estado.inactivo}"></td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                                th:data-bs-id="${e.idEspecialidad}" th:data-bs-descripcion="${e.descripcion}">
+                                            <i class="fa-solid fa-trash"></i> [[#{accion.eliminar}]]
+                                        </button>
+                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#especialidadModal"
+                                                data-modo="editar" th:data-titulo="#{accion.actualizar}"
+                                                th:data-id="${e.idEspecialidad}"
+                                                th:data-descripcion="${e.descripcion}"
+                                                th:data-activo="${e.activo}">
+                                            <i class="fas fa-pencil-alt"></i> [[#{accion.actualizar}]]
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center p-2" th:if="${especialidades == null or especialidades.empty}">
+                        <span>[[#{lista.vacia}]]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white mb-3">
+                <div class="card-body"><h3>[[#{especialidad.total}]]</h3>
+                    <h4 class="fs-2"><i class="fas fa-layer-group"></i> [[${totalEspecialidades}]]</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
